@@ -13,6 +13,7 @@ use rand::RngCore;
 
 // this needs non-camel-case types because the fake crate has the same
 #[allow(non_camel_case_types)]
+#[bindlang::bindlang]
 #[derive(Copy, Clone, Deserialize, Debug, Serialize, PartialEq, Eq)]
 /// a locale to look up names, addresses, etc.
 pub enum Locale {
@@ -25,6 +26,17 @@ pub enum Locale {
 impl Default for Locale {
     fn default() -> Self {
         Self::EN
+    }
+}
+
+impl Display for Locale {
+    fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(fmt, "{}", match self {
+            Self::EN => "EN",
+            Self::FR_FR => "FR",
+            Self::ZH_TW => "TW",
+            Self::ZH_CN => "CN",
+        })
     }
 }
 

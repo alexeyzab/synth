@@ -15,6 +15,7 @@ use crate::graph::{Graph, KeyValueOrNothing};
 #[allow(dead_code)]
 type JsonObject = Map<String, Value>;
 
+#[bindlang::bindlang]
 #[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq)]
 pub struct Namespace {
     #[serde(flatten)]
@@ -24,6 +25,12 @@ pub struct Namespace {
 impl AsRef<BTreeMap<Name, Content>> for Namespace {
     fn as_ref(&self) -> &BTreeMap<Name, Content> {
         &self.collections
+    }
+}
+
+impl std::fmt::Display for Namespace {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:#?}", self)
     }
 }
 

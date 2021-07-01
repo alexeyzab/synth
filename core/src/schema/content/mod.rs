@@ -51,6 +51,24 @@ use super::FieldRef;
 use crate::schema::content::series::SeriesContent;
 use crate::schema::unique::UniqueContent;
 
+/// make an optional FieldContent
+#[bindlang::bindlang(FieldContent)]
+pub fn optional(content: Content) -> FieldContent {
+    FieldContent {
+        optional: true,
+        content: Box::new(content),
+    }
+}
+
+/// make a non-optional FieldContent
+#[bindlang::bindlang(FieldContent)]
+pub fn required(content: Content) -> FieldContent {
+    FieldContent {
+        optional: true,
+        content: Box::new(content),
+    }
+}
+
 pub trait Find<C> {
     fn find<I, R>(&self, reference: I) -> Result<&C>
     where
@@ -86,6 +104,7 @@ pub struct SameAsContent {
     pub ref_: FieldRef,
 }
 
+#[bindlang::bindlang]
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[serde(tag = "type")]
@@ -199,6 +218,7 @@ impl Content {
     }
 }
 
+#[bindlang::bindlang]
 impl Default for Content {
     fn default() -> Self {
         Self::Null
@@ -211,8 +231,8 @@ impl std::fmt::Display for Content {
     }
 }
 
-impl<'r> From<&'r Value> for Content {
-    fn from(value: &'r Value) -> Self {
+impl From<&'_ Value> for Content {
+    fn from(value: &'_ Value) -> Self {
         match value {
             // TODO not sure what the correct behaviour is here
             Value::Null => Content::Null,

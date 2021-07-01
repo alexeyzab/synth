@@ -37,3 +37,20 @@ pub use graph::Graph;
 
 pub mod compile;
 pub use compile::{Compile, Compiler};
+
+#[test]
+fn create_koto_config() -> Result<(), Box<dyn std::error::Error>> {
+    let koto = koto::Koto::default();
+    let prelude = koto.prelude();
+    bindlang_init(&mut prelude);
+    let script = "Namespace::default()";
+    let compiled = koto.compile(script)?;
+    let result_value = koto.run_chunk(compiled)?;
+    let namespace: Namespace = <Namespace as lang_bindings::FromValue>::from_value(&lang_bindings::KeyPath::Index(0, None), &result_value)?;
+    Ok(())
+}
+
+bindlang::bindlang_main! {
+    use crate::graph::{string::Locale, Value};
+    use crate::schema::{ArrayContent, BoolContent, FieldContent, NumberContent, ObjectContent, optional, required};
+}

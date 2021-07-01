@@ -70,6 +70,7 @@ macro_rules! number_content {
 	    },
 	)*
     } => {
+    #[bindlang::bindlang]
 	#[derive(Debug, Clone, PartialEq)]
     //TODO: With custom implementation for `Serialize` we
     //      have to implement this on our own:
@@ -79,6 +80,16 @@ macro_rules! number_content {
 		$as(number_content::$as),
 	    )*
 	}
+
+    impl Display for NumberContent {
+        fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+            match self {
+                $(
+                    NumberContent::$as(value) => value.fmt(f),
+                )*
+            }
+        }
+    }
 
     impl Serialize for NumberContent
     {
@@ -159,6 +170,12 @@ macro_rules! number_content {
 			Self::$as(value)
 		    }
 		}
+
+        impl std::fmt::Display for $as {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                write!(f, "{:?}", self) //TODO: Make something more useful
+            }
+        }
 	    )*
 	}
 
